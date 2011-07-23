@@ -20,6 +20,14 @@
 /* #Page Styles
 ================================================== */
 
+img{
+	max-width: 100%;
+}
+.result{
+	max-height:200px;
+	background-color:#ffd;
+}
+
 /* #Media Queries
 ================================================== */
 	
