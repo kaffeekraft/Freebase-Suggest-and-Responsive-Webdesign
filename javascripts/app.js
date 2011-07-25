@@ -69,14 +69,14 @@ $(document).ready(function() {
 						var image_found = false;
 						if(this.image.id.search(/wikipedia/)!=-1){
 							image_found = true;
-							row.append($("<div class='four columns result'>").html("<div class='row'><div class='two columns alpha'><h3>"+this.name+"</h3></div><div class='two columns omega'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"?maxwidth=400&maxheight=400'></div></div>"));								
+							row.append($("<div class='four columns result'>").html("<h3>"+this.name+"</h3><div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"?maxwidth=400&maxheight=400'></div>"));								
 						}
 						if(image_found===false){
-							row.append($("<div class='four columns result'>").html("<div class='row'><div class='four columns alpha'><h3>"+this.name+"</h3></div></div>")); // Make <div> for each.						
+							row.append($("<div class='four columns result'>").html("<h3>"+this.name+"</h3>")); // Make <div> for each.						
 						}
 					}
 					else{
-	                	row.append($("<div class='four columns result'>").html("<div class='row'><div class='four columns alpha'><h3>"+this.name+"</h3></div></div>"));
+	                	row.append($("<div class='four columns result'>").html("<div class='row'><h3>"+this.name+"</h3>"));
 					}
 
 	            });
