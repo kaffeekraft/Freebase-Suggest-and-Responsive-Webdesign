@@ -39,7 +39,10 @@ $(document).ready(function() {
 		});
 	});
 	var offset = 0;
-	var search_query_backup = "";
+	var search_query_cache = "";
+	var timer;
+	var search_text_input = null;
+	
 	function search(search_query) {
 		var search_results = $("#search-results");                          // Output goes here
 		    console.log("search_query: " + search_query);     				// Display search query in console
@@ -48,14 +51,15 @@ $(document).ready(function() {
 	    jQuery.getJSON("http://api.freebase.com/api/service/search?callback=?",
 	                   {
 							query: search_query,
-							limit:8,
+							limit:12,
 							start: offset,
 						},
 	                   displayResults
 					);                     // Callback function
 
 	    // This function is invoked when we get the result of our MQL query
-	    function displayResults(response) {  
+	    function displayResults(response) {
+	        showStatusSelectResult();
 	        if (response.code == "/api/status/ok" && response.result) { // Check for success...
 	            if(offset===0){
 					search_results.children().remove();
@@ -87,16 +91,32 @@ $(document).ready(function() {
 	        }
 	    }
 	}
-	$('#suggest-box').suggest().bind("fb-select", function(e, data) {alert(data.name + ", " + data.id);});
+	function showStatusSelectResult(){
+	    $('#search-status').children().remove();
+	    $('#search-status').append('<div class="sixteen columns"><h2>Select a result</h2></div>');
+	}
+	function showStatusSearching(){
+	    $('#search-status').children().remove();
+	    $('#search-status').append('<div class="sixteen columns"><h2>Searching...</h2></div>');
+	    console.log('searching...')
+	}
 	$('#mysuggest').keypress(function(event){
-		search_query_backup = $(this).val();
-	 	offset = 0;
-		search(search_query_backup);
-		//$('#result').append(event);
+	    showStatusSearching();
+	    if(timer!=null){
+	        clearTimeout(timer);
+	    }
+	    timer = setTimeout(function(){
+    	    search_query_cache = $('#mysuggest').val();
+    	 	offset = 0;
+    		search(search_query_cache);
+	    },1000)
 	});
 	$('#more-button').click(function(){
-		offset = offset+10;
+		offset = offset+12;
 		search(search_query_backup);
 		});
+		
+	// Standard FB Suggest Box initialisierung
+	$('#suggest-box').suggest().bind("fb-select", function(e, data) {alert(data.name + ", " + data.id);});
 	
 });
