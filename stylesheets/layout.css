@@ -24,8 +24,15 @@ img{
 	max-width: 100%;
 }
 .result{
-	max-height:200px;
 	background-color:#ffd;
+	border-bottom-style: solid;
+    border-bottom-color: black;
+    border-bottom-width: 1px;
+    min-height: 230px;
+    margin-bottom: 1em;
+}
+.result_img{
+    float:left;
 }
 
 /* #Media Queries
