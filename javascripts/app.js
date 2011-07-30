@@ -65,29 +65,24 @@ $(document).ready(function() {
 					search_results.children().remove();
 				}
 				var row = $("<div class='row'>");                       // Make a row
-	            search_results.append(row.hide())                  // Keep it hidden
-	            var names = response.result;
-				var results_length = names.length;         // Get names.
-	            jQuery.each(names, function() {            // Loop through names.
-					if(this.image!=null){
-						var image_found = false;
-						if(this.image.id.search(/wikipedia/)!=-1){
-							image_found = true;
-							row.append($("<div class='four columns result'>").html("<h3>"+this.name+"</h3><div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"?maxwidth=400&maxheight=400'></div>"));								
-						}
-						if(image_found===false){
-							row.append($("<div class='four columns result'>").html("<h3>"+this.name+"</h3>")); // Make <div> for each.						
-						}
+	            search_results.append(row.hide())                       // Keep it hidden
+	            var results = response.result;                          // Get results.
+				var results_length = results.length;
+				
+	            jQuery.each(results, function() {                       // Loop through results.
+					if(this.image!=null){                               // Check if there is a image
+						row.append($("<div class='four columns result'>").html("<h3>"+this.name+"</h3><div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"?maxwidth=400&maxheight=400'></div>"));								
 					}
 					else{
 	                	row.append($("<div class='four columns result'>").html("<div class='row'><h3>"+this.name+"</h3>"));
 					}
 
 	            });
-	            row.show("normal");                        // Reveal the list
+	            row.show("normal");                                     // Reveal the list
 	        }
-	        else {                                          // On failure...
-	            search_results.append("Unknown: " + search_query);     // Display message.
+	        else {                                                      // On failure...
+	            $('#search-status').children().remove();
+	            $('#search-status').append('<div class="sixteen columns"><h2>Sorry no results found for "'+search_query+'"</h2></div>')      // Display no results status.
 	        }
 	    }
 	}
@@ -113,7 +108,7 @@ $(document).ready(function() {
 	});
 	$('#more-button').click(function(){
 		offset = offset+12;
-		search(search_query_backup);
+		search(search_query_cache);
 		});
 		
 	// Standard FB Suggest Box initialisierung
