@@ -73,7 +73,7 @@ $(document).ready(function() {
 	                if(this.image!=null && this.article!=null){                               // Check if there is a image
 	                    var article = "";
 	                    var result_guid = this.guid.slice(1);
-	                    row.append($("<div id='"+result_guid+"' class='four columns result'>").html("<div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"'></div><h5>"+this.name+"</h5>"));								
+	                    row.append($("<div id='"+result_guid+"' class='eight columns result'>").html("<div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"'></div><h5>"+this.name+"</h5>"));								
 	                    $.getJSON('https://api.freebase.com/api/trans/blurb'+this.article.id+"?callback=?", function(data) {
                             if (data.code == "/api/status/ok" && data.result){
                                 $('#'+result_guid).append('<p>'+data.result.body+'</p>');    
@@ -84,12 +84,12 @@ $(document).ready(function() {
 						
 					}
 					else if(this.image!=null && this.article===null){                               // Check if there is a image
-						row.append($("<div class='four columns result'>").html("<div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"'></div><h5>"+this.name+"</h5>"));								
+						row.append($("<div class='five columns result'>").html("<div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"'></div><h5>"+this.name+"</h5>"));								
 					}
 					else if(this.image==null && this.article!=null){
 					    var article = "";
 					    var result_guid = this.guid.slice(1);                               // Check if there is a image
-						row.append($("<div class='four columns result'>").html("<h5>"+this.name+"</h5>"));
+						row.append($("<div class='eight columns result'>").html("<h5>"+this.name+"</h5>"));
 						$.getJSON('https://api.freebase.com/api/trans/blurb'+this.article.id+"?callback=?", function(data) {
                             if (data.code == "/api/status/ok" && data.result){
                                 $('#'+result_guid).append('<p>'+data.result.body+'</p>');    
@@ -98,7 +98,7 @@ $(document).ready(function() {
                         });								
 					}
 					else{
-	                	row.append($("<div class='four columns result'>").html("<h5>"+this.name+"</h5>"));
+	                	row.append($("<div class='eight columns result' style='min-height:65px!important;'>").html("<h5>"+this.name+"</h5>"));
 					}
 
 	            });
