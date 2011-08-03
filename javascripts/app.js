@@ -45,13 +45,13 @@ $(document).ready(function() {
 	
 	function search(search_query) {
 		var search_results = $("#search-results");                          // Output goes here
-		    console.log("search_query: " + search_query);     				// Display search query in console
+		    //console.log("search_query: " + search_query);     				// Display search query in console
 
 	    // Adding callback=? to the URL makes jQuery do JSONP instead of XHR.
 	    jQuery.getJSON("http://api.freebase.com/api/service/search?callback=?",
 	                   {
 							query: search_query,
-							limit:12,
+							limit:8,
 							start: offset,
 						},
 	                   displayResults
@@ -59,56 +59,68 @@ $(document).ready(function() {
 
 	    // This function is invoked when we get the result of our MQL query
 	    function displayResults(response) {
-	        showStatusSelectResult();
+	        
 	        if (response.code == "/api/status/ok" && response.result) { // Check for success...
-	            if(offset===0){
+	            if(response.result.length === 0){
 					search_results.children().remove();
+					$('#search-status').children().remove();
+		            $('#search-status').append('<div class="sixteen columns"><h2>Sorry no results found for "'+search_query+'"</h2></div>')      // Display no results status.
 				}
-				var row = $("<div class='row'>");                       // Make a row
-	            search_results.append(row.hide())                       // Keep it hidden
-	            var results = response.result;                          // Get results.
-				var results_length = results.length;
-				
-	            jQuery.each(results, function() {                       // Loop through results.
-	                if(this.image!=null && this.article!=null){                               // Check if there is a image
-	                    var article = "";
-	                    var result_guid = this.guid.slice(1);
-	                    row.append($("<div id='"+result_guid+"' class='eight columns result'>").html("<div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"'></div><h5>"+this.name+"</h5>"));								
-	                    $.getJSON('https://api.freebase.com/api/trans/blurb'+this.article.id+"?callback=?", function(data) {
-                            if (data.code == "/api/status/ok" && data.result){
-                                $('#'+result_guid).append('<p>'+data.result.body+'</p>');    
-                            }
-                            
-                            console.log('Load was performed: '+article);
-                        });
-						
+				else{
+					showStatusSelectResult();
+					if(offset===0){
+						search_results.children().remove();
 					}
-					else if(this.image!=null && this.article===null){                               // Check if there is a image
-						row.append($("<div class='five columns result'>").html("<div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"'></div><h5>"+this.name+"</h5>"));								
-					}
-					else if(this.image==null && this.article!=null){
-					    var article = "";
-					    var result_guid = this.guid.slice(1);                               // Check if there is a image
-						row.append($("<div class='eight columns result'>").html("<h5>"+this.name+"</h5>"));
-						$.getJSON('https://api.freebase.com/api/trans/blurb'+this.article.id+"?callback=?", function(data) {
-                            if (data.code == "/api/status/ok" && data.result){
-                                $('#'+result_guid).append('<p>'+data.result.body+'</p>');    
-                            }
-                            console.log('Load was performed: '+article);
-                        });								
-					}
-					else{
-	                	row.append($("<div class='eight columns result' style='min-height:65px!important;'>").html("<h5>"+this.name+"</h5>"));
-					}
+					var row = $("<div class='row'>");                       // Make a row
+		            search_results.append(row.hide())                       // Keep it hidden
+		            var results = response.result;                          // Get results.
+					var results_length = results.length;
 
-	            });
-	            row.show("normal");                                     // Reveal the list
+		            jQuery.each(results, function() {                       // Loop through results.
+		                if(this.image!=null && this.article!=null){                               // Check if there is a image
+		                    var article = "";
+		                    var result_guid = this.guid.slice(1);
+		                    row.append($("<div id='"+result_guid+"' class='eight columns result'>").html("<div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"?maxwidth=180&maxheight=180'></div><h5>"+this.name+"</h5>"));								
+		                    $.getJSON('https://api.freebase.com/api/trans/blurb'+this.article.id+"?callback=?&?maxlength=160", function(data) {
+	                            if (data.code == "/api/status/ok" && data.result){
+	                                $('#'+result_guid).append('<p class="fb-article">'+data.result.body+'</p>');    
+	                            }
+
+	                            //console.log('Load was performed: '+article);
+	                        });
+
+						}
+						else if(this.image!=null && this.article===null){                               // Check if there is a image
+							row.append($("<div class='five columns result'>").html("<div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"'></div><h5>"+this.name+"</h5>"));								
+						}
+						else if(this.image==null && this.article!=null){
+						    var article = "";
+						    var result_guid = this.guid.slice(1);                               // Check if there is a image
+							row.append($("<div class='eight columns result'>").html("<h5>"+this.name+"</h5>"));
+							$.getJSON('https://api.freebase.com/api/trans/blurb'+this.article.id+"?callback=?&?maxlength=160", function(data) {
+	                            if (data.code == "/api/status/ok" && data.result){
+	                                $('#'+result_guid).append('<p class="fb-article">'+data.result.body+'</p>');    
+	                            }
+	                            //console.log('Load was performed: '+article);
+	                        });								
+						}
+						else{
+		                	row.append($("<div class='eight columns result'>").html("<h5>"+this.name+"</h5>"));
+						}
+
+		            });
+		            row.show("normal");                                     // Reveal the list
+				}
 	        }
-	        else {                                                      // On failure...
-	            $('#search-status').children().remove();
-	            $('#search-status').append('<div class="sixteen columns"><h2>Sorry no results found for "'+search_query+'"</h2></div>')      // Display no results status.
+	        else {
+				search_results.children().remove();                                                      // On failure, or on deleted query...
+	            showStatusStartTyping();
 	        }
 	    }
+	}
+	function showStatusStartTyping(){
+		$('#search-status').children().remove();
+        $('#search-status').append('<div class="sixteen columns"><h2>Start typing to get suggestions...</h2></div>')      // Display no results status.
 	}
 	function showStatusSelectResult(){
 	    $('#search-status').children().remove();
@@ -117,21 +129,31 @@ $(document).ready(function() {
 	function showStatusSearching(){
 	    $('#search-status').children().remove();
 	    $('#search-status').append('<div class="sixteen columns"><h2>Searching...</h2></div>');
-	    console.log('searching...')
+	    //console.log('searching...')
 	}
-	$('#mysuggest').keypress(function(event){
+	$('#mysuggest').keydown(function(event){
+		function doSearch(){
+			search_query_cache = $('#mysuggest').val();
+    	 	offset = 0;
+			clearTimeout(timer);
+    		search(search_query_cache);
+		}
+		if (event.keyCode===13 || event.charCode===13 ||event.which === 13){
+			event.preventDefault();
+			doSearch();
+		}
 	    showStatusSearching();
 	    if(timer!=null){
 	        clearTimeout(timer);
 	    }
 	    timer = setTimeout(function(){
-    	    search_query_cache = $('#mysuggest').val();
-    	 	offset = 0;
-    		search(search_query_cache);
+    	    doSearch();
 	    },1000)
 	});
+	$('#mysuggest').focus();
+	showStatusStartTyping();
 	$('#more-button').click(function(){
-		offset = offset+12;
+		offset = offset+8;
 		search(search_query_cache);
 		});
 		
