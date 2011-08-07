@@ -80,10 +80,15 @@ $(document).ready(function() {
 		                if(this.image!=null && this.article!=null){                               // Check if there is a image
 		                    var article = "";
 		                    var result_guid = this.guid.slice(1);
+		                    var item_id = this.id;
 		                    row.append($("<div id='"+result_guid+"' class='eight columns result'>").html("<div class='result_img'><img src='https://api.freebase.com/api/trans/image_thumb/"+this.image.id+"?maxwidth=180&maxheight=180'></div><h5>"+this.name+"</h5>"));								
-		                    $.getJSON('https://api.freebase.com/api/trans/blurb'+this.article.id+"?callback=?&?maxlength=160", function(data) {
-	                            if (data.code == "/api/status/ok" && data.result){
-	                                $('#'+result_guid).append('<p class="fb-article">'+data.result.body+'</p>');    
+		                    $.getJSON('http://api.freebase.com/api/experimental/topic/basic?callback=?',
+		                                    {
+		                                    id:item_id,    
+		                                    },
+		                                    function(data) {
+	                            if (data[item_id].code == "/api/status/ok" && data[item_id].result){
+	                                $('#'+result_guid).append('<p class="fb-article">'+data[item_id].result.description+'</p>');
 	                            }
 
 	                            //console.log('Load was performed: '+article);
